@@ -8,7 +8,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE        := mt76x8_bt
 LOCAL_MODULE_SUFFIX := .ko
 LOCAL_MODULE_CLASS  := ETC
-LOCAL_MODULE_PATH   := $(TARGET_OUT_VENDOR)/lib/modules
+LOCAL_MODULE_PATH   := $(TARGET_OUT)/lib/modules
 
 _mt76x8_bt_intermediates := $(call intermediates-dir-for,$(LOCAL_MODULE_CLASS),$(LOCAL_MODULE))
 _mt76x8_bt_mod_name := $(LOCAL_MODULE)
@@ -18,13 +18,13 @@ KERNEL_OUT_RELATIVE := ../../KERNEL_OBJ
 
 $(_mt76x8_bt_ko): $(KERNEL_OUT)/arch/$(TARGET_KERNEL_ARCH)/boot/$(BOARD_KERNEL_IMAGE_NAME)
 	@mkdir -p $(dir $@)
-	@mkdir -p $(KERNEL_MODULES_OUT)/lib/modules
+	@mkdir -p $(KERNEL_MODULES_OUT)
 	@cp -R $(MT76X8_BT_PATH)/module/* $(_mt76x8_bt_intermediates)/
 	$(hide) +$(MAKE) -C $(KERNEL_OUT) M=$(abspath $(_mt76x8_bt_intermediates)) ARCH=$(TARGET_KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) SDIO_MOD_NAME=$(_mt76x8_bt_mod_name) modules
 	modules=$$(find $(_mt76x8_bt_intermediates) -type f -name '*.ko'); \
 	for f in $$modules; do \
 		$(KERNEL_TOOLCHAIN_PATH)strip --strip-unneeded $$f; \
-		cp $$f $(KERNEL_MODULES_OUT)/lib/modules; \
+		cp $$f $(KERNEL_MODULES_OUT); \
 	done;
 	touch $(_mt76x8_bt_ko)
 
